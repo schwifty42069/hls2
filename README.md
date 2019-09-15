@@ -1,0 +1,1 @@
+A hls hot link scraper for streams posted to r/nflstreams
