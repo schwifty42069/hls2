@@ -102,6 +102,8 @@ class HotLinkScraper(object):
                 a = self.driver.execute_script(self.export_har_js)
                 print(a)
 
+            self.driver.quit()
+
 
 def main():
     team_name = input("\nPlease enter the name of the team you wish to search for:\n")
