@@ -58,6 +58,7 @@ class HotLinkScraper(object):
         self.profile.add_extension("resource/har_export_trigger-0.6.1.xpi")
         self.options = FirefoxOptions()
         self.options.add_argument("-headless")
+        self.options.add_argument("-devtools")
         self.driver = webdriver.Firefox(self.profile, firefox_options=self.options)
         self.export_har_js = \
             """return HAR.triggerExport().then(harLog => {
