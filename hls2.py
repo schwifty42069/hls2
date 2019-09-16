@@ -116,7 +116,8 @@ class HotLinkScraper(object):
             else:
                 har = self.driver.execute_script(self.export_har_js)
                 print("\nURL:\n" + har['url'])
-                pprint.pprint("\nHeaders:\n" + har['headers'])
+                print("\nHeaders:\n")
+                pprint.pprint(har['headers'])
 
             self.driver.quit()
 
