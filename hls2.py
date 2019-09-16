@@ -55,7 +55,7 @@ class GameLinkScraper(object):
                             continue
             except TypeError:
                 continue
-        print(links)
+        pprint.pprint(links)
         return links
 
 
@@ -123,12 +123,22 @@ class HotLinkScraper(object):
 
 
 def main():
-    team_name = input("\nPlease enter the name of the team you wish to search for:\n")
-    gls = GameLinkScraper(team_name)
-    if not gls.links:
-        return
-    else:
-        HotLinkScraper(gls.links)
+    while True:
+        action = input("\nType browser to get browser links, or hotlinks to try to scrape HLS hotlinks:\n")
+        if action == "hotlink":
+            team_name = input("\nPlease enter the name of the team you wish to search for:\n")
+            gls = GameLinkScraper(team_name)
+            if not gls.links:
+                return
+            else:
+                HotLinkScraper(gls.links)
+        elif action == "browser":
+            team_name = input("\nPlease enter the name of the team you wish to search for:\n")
+            GameLinkScraper(team_name)
+        elif action == "quit":
+            return
+        else:
+            print("\nInvalid command, try again!\n")
 
 
 if __name__ == "__main__":
