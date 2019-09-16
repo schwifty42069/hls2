@@ -1,4 +1,4 @@
-###### **An HLS hotlink scraper for stream links posted to r/nflstreams**
+**An HLS hotlink scraper for stream links posted to r/nflstreams**
 
 This project is still in it's infancy and is incredibly simple right now. It is capable of scraping the
 browser links for any specified team, and will *eventually* be capable of scraping the actual
