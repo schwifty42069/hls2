@@ -2,6 +2,7 @@ import requests
 import json
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+import pprint
 
 
 class GameLinkScraper(object):
@@ -35,18 +36,26 @@ class GameLinkScraper(object):
             print("\nCouldn't find any links for that team! Try again closer to game time!\n")
             return 'None'
 
+    # This is hacky and loopy but for some reason I can't directly
+    # access the "body_html" key within the inner post dictionary
+    # without raising an exception
     def fetch_links(self):
         links = []
         for item in self.game_json:
-            for data in item['data']['children']:
-                for key in data['data'].keys():
-                    try:
-                        if key == "body_html":
-                            url = data['data'][key].split("href=")[1]
-                            if "http" in url:
-                                links.append(url.split("&")[0].strip("\""))
-                    except IndexError or KeyError or TypeError:
-                        continue
+            try:
+                for data in item['data']['children']:
+                    for key in data['data'].keys():
+                        try:
+                            if key == "body_html":
+                                url = data['data'][key].split("href=")[1]
+
+                                if "http" in url:
+                                    links.append(url.split("&")[0].strip("\""))
+                        except IndexError or KeyError or TypeError:
+                            continue
+            except TypeError:
+                continue
+        print(links)
         return links
 
 
@@ -60,6 +69,8 @@ class HotLinkScraper(object):
         self.options.add_argument("-headless")
         self.options.add_argument("-devtools")
         self.driver = webdriver.Firefox(self.profile, firefox_options=self.options)
+
+        # Javascript to inject with selenium for HAR export
         self.export_har_js = \
             """return HAR.triggerExport().then(harLog => {
                    for (r of harLog.entries) {
@@ -69,23 +80,26 @@ class HotLinkScraper(object):
                    }
                });"""
 
+        # IIFE to return isolated embedded player element and extract it's source
+        # for streams that need to be clicked before the HLS hotlink is exposed
         self.get_stream_iframe_js = \
             """return (() => {
-                   ifs = [];
-                   for (e of document.all) {
-                       if (e.innerHTML.includes("gma")) {
-                           ifs.push(e);
-                       }
-                   }
-                   return(ifs)[5].innerHTML;
+                   return document.getElementById("stream")['src'];
                })();"""
 
+        self.get_stream_iframe_js2 = \
+            """return (() => {
+                   return document.getElementById("ipopp")['src'];
+               })();"""
+
+        # Javascript to click on a page
         self.click_isolated_iframe = \
             """for (e of document.all) {
                   e.click();
                 }"""
         self.scrape()
 
+    # Most work needs to be done here, handling specific popular streams
     def scrape(self):
         for stream_link in self.links:
             self.driver.get(stream_link)
@@ -100,8 +114,9 @@ class HotLinkScraper(object):
                 har = self.driver.execute_script(self.export_har_js)
                 print(har)
             else:
-                a = self.driver.execute_script(self.export_har_js)
-                print(a)
+                har = self.driver.execute_script(self.export_har_js)
+                print("\nURL:\n" + har['url'])
+                pprint.pprint("\nHeaders:\n" + har['headers'])
 
             self.driver.quit()
 
