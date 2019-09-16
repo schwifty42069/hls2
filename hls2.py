@@ -124,8 +124,10 @@ class HotLinkScraper(object):
 
 def main():
     while True:
-        action = input("\nType browser to get browser links, or hotlinks to try to scrape HLS hotlinks:\n")
-        if action == "hotlink":
+        action = input("\nFor browser links only type browser"
+                       "\nFor hotlinks type hotlink\n"
+                       "For both, type both\n")
+        if action == "both":
             team_name = input("\nPlease enter the name of the team you wish to search for:\n")
             gls = GameLinkScraper(team_name)
             if not gls.links:
@@ -135,6 +137,9 @@ def main():
         elif action == "browser":
             team_name = input("\nPlease enter the name of the team you wish to search for:\n")
             GameLinkScraper(team_name)
+        elif action == "hotlink":
+            url = input("\nPlease enter the url to scrape hotlink from:\n")
+            HotLinkScraper([url])
         elif action == "quit":
             return
         else:
