@@ -33,7 +33,7 @@ class GameLinkScraper(object):
                 except KeyError or TypeError:
                     continue
 
-            print("\nCouldn't find any links for that team! Try again closer to game time!\n")
+            print("\n\033[1;31;49mCouldn't find any links for that team! Try again closer to game time!\n")
             return 'None'
 
     # This is hacky and loopy but for some reason I can't directly
@@ -55,6 +55,7 @@ class GameLinkScraper(object):
                             continue
             except TypeError:
                 continue
+        print("\033[1;37;49m")
         pprint.pprint(links)
         return links
 
@@ -115,7 +116,7 @@ class HotLinkScraper(object):
                 print(har)
             else:
                 har = self.driver.execute_script(self.export_har_js)
-                print("\nURL:\n" + har['url'])
+                print("\033[1;37;49m\nURL:\n\n" + har['url'])
                 print("\nHeaders:\n")
                 pprint.pprint(har['headers'])
 
@@ -124,31 +125,31 @@ class HotLinkScraper(object):
 
 def main():
     while True:
-        print("\nFor browser links only, type browser."
+        print("\n\033[1;36;49mFor browser links only, type browser."
               "\nFor hotlinks only, type hotlink.\n"
-              "For both, type both. *Not quite ready! Will likely throw exception*\n"
-              "To quit, type quit.\n\n")
-        action = input(">> ")
+              "For both, type both. \033[1;33;49m*Not quite ready! Will likely throw exception*\n"
+              "\033[1;36;49mTo quit, type quit.\n\n")
+        action = input("\033[1;32;49m>> ")
         if action == "both":
-            print("\nPlease enter the name of the team you wish to search for:\n")
-            team_name = input(">> ")
+            print("\n\033[1;36;49mPlease enter the name of the team you wish to search for:\n")
+            team_name = input("\033[1;32;49m>> ")
             gls = GameLinkScraper(team_name)
             if not gls.links:
                 return
             else:
                 HotLinkScraper(gls.links)
         elif action == "browser":
-            print("\nPlease enter the name of the team you wish to search for:\n")
-            team_name = input(">> ")
+            print("\n\033[1;36;49mPlease enter the name of the team you wish to search for:\n")
+            team_name = input("\033[1;32;49m>> ")
             GameLinkScraper(team_name)
         elif action == "hotlink":
-            print("\nPlease enter the url to scrape hotlink from:\n")
-            url = input(">> ")
+            print("\n\033[1;36;49mPlease enter the url to scrape hotlink from:\n")
+            url = input("\033[1;32;49m>> ")
             HotLinkScraper([url])
         elif action == "quit":
             return
         else:
-            print("\nInvalid command, try again!\n")
+            print("\n\033[1;31;49mInvalid command, try again!\n")
 
 
 if __name__ == "__main__":
