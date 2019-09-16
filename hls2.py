@@ -3,6 +3,7 @@ import json
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 import pprint
+import time
 
 
 class GameLinkScraper(object):
@@ -85,7 +86,7 @@ class HotLinkScraper(object):
         # for streams that need to be clicked before the HLS hotlink is exposed
         self.get_stream_iframe_js = \
             """return (() => {
-                   return document.getElementById("stream")['src'];
+                   return document.getElementById("stream")['firstElementChild']['src'];
                })();"""
 
         self.get_stream_iframe_js2 = \
@@ -96,7 +97,11 @@ class HotLinkScraper(object):
         # Javascript to click on a page
         self.click_isolated_iframe = \
             """for (e of document.all) {
-                  e.click();
+                   try {
+                       e.click();
+                   } catch (TypeError) {
+                       continue;
+                   }
                 }"""
         self.scrape()
 
@@ -106,14 +111,15 @@ class HotLinkScraper(object):
             self.driver.get(stream_link)
             if "grandmastreams" in stream_link:
                 print("\nrunning gma streams js...\n")
-                a = self.driver.execute_script(self.get_stream_iframe_js)
-                link = a.split("<iframe src=")[1].split(" ")[0].strip("\"")
+                link = self.driver.execute_script(self.get_stream_iframe_js)
                 print(link)
-                self.driver.close()
                 self.driver.get(link)
                 self.driver.execute_script(self.click_isolated_iframe)
+                time.sleep(3)
                 har = self.driver.execute_script(self.export_har_js)
-                print(har)
+                print("\033[1;37;49m\nURL:\n\n" + har['url'])
+                print("\nHeaders:\n")
+                pprint.pprint(har['headers'])
             else:
                 har = self.driver.execute_script(self.export_har_js)
                 print("\033[1;37;49m\nURL:\n\n" + har['url'])
