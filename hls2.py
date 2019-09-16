@@ -124,9 +124,9 @@ class HotLinkScraper(object):
 
 def main():
     while True:
-        print("\nFor browser links, only type browser."
+        print("\nFor browser links only, type browser."
               "\nFor hotlinks only, type hotlink.\n"
-              "For both, type both.\n"
+              "For both, type both. *Not quite ready! Will likely throw exception*\n"
               "To quit, type quit.\n\n")
         action = input(">> ")
         if action == "both":
