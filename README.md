@@ -1,5 +1,8 @@
 **An HLS hotlink scraper for stream links posted to r/nflstreams**
 
+*PROJECT IS BROKEN, REBUILDING FOR NFLBITE, DO NOT USE THIS SCRIPT IF YOU SEE THIS MESSAGE!
+=====================================================
+
 This project is still in it's infancy and is incredibly simple right now. It is capable of scraping the
 browser links for any specified team, and will *eventually* be capable of scraping the actual
 HLS hotlinks for any given page. 
